@@ -4,6 +4,7 @@ import xcproj
 
 public struct SpecOptions: Equatable {
 
+    public var minimumXcodeGenVersion: Version?
     public var carthageBuildPath: String?
     public var carthageExecutablePath: String?
     public var createIntermediateGroups: Bool
@@ -45,6 +46,7 @@ public struct SpecOptions: Equatable {
     }
 
     public init(
+        minimumXcodeGenVersion: Version? = nil,
         carthageBuildPath: String? = nil,
         carthageExecutablePath: String? = nil,
         createIntermediateGroups: Bool = false,
@@ -60,6 +62,7 @@ public struct SpecOptions: Equatable {
         defaultConfig: String? = nil,
         transitivelyLinkDependencies: Bool = false
     ) {
+        self.minimumXcodeGenVersion = minimumXcodeGenVersion
         self.carthageBuildPath = carthageBuildPath
         self.carthageExecutablePath = carthageExecutablePath
         self.createIntermediateGroups = createIntermediateGroups
@@ -80,6 +83,10 @@ public struct SpecOptions: Equatable {
 extension SpecOptions: JSONObjectConvertible {
 
     public init(jsonDictionary: JSONDictionary) throws {
+        if let string: String = jsonDictionary.json(atKeyPath: "minimumXcodeGenVersion") {
+            minimumXcodeGenVersion = try Version(string)
+        }
+        
         carthageBuildPath = jsonDictionary.json(atKeyPath: "carthageBuildPath")
         carthageExecutablePath = jsonDictionary.json(atKeyPath: "carthageExecutablePath")
         bundleIdPrefix = jsonDictionary.json(atKeyPath: "bundleIdPrefix")
